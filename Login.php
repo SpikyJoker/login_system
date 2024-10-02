@@ -117,7 +117,7 @@ if (isset($_COOKIE['user_session'])) {
 							</label>
 						</div>
 						<button type="submit" class="log-in-wrapper">Log In</button>
-						<?php
+						<p><?php
 								if ($_SERVER["REQUEST_METHOD"] == "POST") {
 									$username = $_POST["username"];
 									$password = $_POST["password"];
@@ -147,6 +147,7 @@ if (isset($_COOKIE['user_session'])) {
 											setcookie("user_session", session_id(), 0);
 										}
 										header("Location: Dashboard.php");
+                                        exit();
 									} else {
 										// If the user is not in the database or the password is incorrect, display an error message
 										echo "Invalid credentials.";
@@ -160,6 +161,7 @@ if (isset($_COOKIE['user_session'])) {
 								}
 							
 						?>
+                        </p>
 						<a href="Register.php">Switch to register</a>
 						<input type="hidden" name="csrf_token" value="<?php echo bin2hex(random_bytes(32)); ?>">
 					</form>
