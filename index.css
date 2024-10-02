@@ -160,7 +160,7 @@
         justify-content: center;
     }
     p {
-        margin: 0.3em 0.3em;
+        padding: 0.3em 0.3em;
         font-size: 1em;
         color: var(--contrast-color);
         font-family: 'Inria Sans', sans-serif;
