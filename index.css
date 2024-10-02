@@ -1,0 +1,198 @@
+
+    :root {
+        --main-back: hsl(0, 0%, 94%); /* hsl(278, 69%, 90%)*/
+        --main-color: hsl(var(--main-color-h), var(--main-color-s), var(--main-color-l)); /* hsl(221, 38%, 71%)*/
+        --primary: hsl(27, 78%, 62%); /*hsl(355, 67%, 76%)*/
+        --main-color-h: 41;
+        --main-color-s: 95%;
+        --main-color-l: 58%;
+        --main-color-darker: hsl(var(--main-color-h), var(--main-color-s), calc(var(--main-color-l) - 5%));
+        --main-color-darkest: hsl(var(--main-color-h), var(--main-color-s), calc(var(--main-color-l) - 10%));
+        --main-color-lighter: hsl(var(--main-color-h), var(--main-color-s), calc(var(--main-color-l) + 5%));
+        --main-color-lightest: hsl(var(--main-color-h), var(--main-color-s), calc(var(--main-color-l) + 10%));
+        --main-color-lightmax: hsl(var(--main-color-h), var(--main-color-s), calc(var(--main-color-l) + 40%));
+        --contrast-color: hsl(0, 0%, 10%);
+        --hsl-test: hsl(41, 95%, 58%);
+    }
+    .bg-brand {
+        --tw-bg-opacity: 1;
+        background-color:rgb(255 131 0/var(--tw-bg-opacity))
+      }
+      .bg-brand\/10 {
+        background-color:#ff83001a
+      }
+    .page{
+        background-color: var(--main-back);
+        color: var(--contrast-color);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        font-family: 'Inria Sans', sans-serif; /* Apply globally */
+    }
+
+    .text-inputs {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .text-inputs input {
+        width: 192px;
+        position: relative;
+        letter-spacing: 0.05em;
+        display: flex;
+        align-items: center;
+        height: 32px;
+        flex-shrink: 0;
+        margin: 5px;
+        padding: 0px 10px;
+        background-color: var(--main-color-lightmax);
+        font-weight: 400;
+        border-radius: 5px;
+        border: none;
+        box-shadow: 0px 0px 4px 3px var(--main-color-lightest);
+    }
+    .login {
+        position: relative;
+        letter-spacing: 0.03em;
+    }
+    
+
+    .checkbox {
+        padding: 4px;
+    }
+    .stay-logged-in{
+        position: relative;
+        letter-spacing: 0.05em;
+        background-color: transparent;
+        border: none;
+        color: var(--contrast-color);
+    }
+
+    .log-in-wrapper {
+        border-radius: 30px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 30px;
+        margin: 20px 30px;
+        border: none;
+        background-color: var(--main-color);
+        color: var(--contrast-color);
+    }
+    .log-in-wrapper:hover {
+        background-color: var(--main-color-lightest);
+    }
+    .log-in-wrapper:active {
+        background-color: var(--main-color-darkest);
+    }
+    .confirm {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        color: #fff;
+    }
+    .data-field {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 15px;
+        font-size: 16px;
+        color: #5b696c;
+        font-family: 'Inria Sans';
+    }
+    .login-section {
+        width: 1000px;
+        height:100%;
+        position: relative;
+        box-shadow: 0px 0px 5px 3px var(--primary);
+        border-radius: 20px;
+        border: solid 5px transparent;  
+        background: linear-gradient(var(--main-color-lightmax),var(--main-color-lightmax)) padding-box, linear-gradient(to bottom, var(--primary) 15%, var(--main-color) 67%) border-box;  
+        box-sizing: border-box;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 39px 0px;
+        margin: 0.3em;
+        gap: 80px;
+        text-align: left;
+        font-size: 44px;
+        color: var(--contrast-color);
+        font-family: Inter;
+    }
+        .login-section a {
+            font-size: 20px;
+            color: var(--contrast-color);
+            font-family: 'Inria Sans', sans-serif;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+
+        .login-section a:hover {
+            color: var(--main-color-lighter);
+        }
+
+        .login-section a:active {
+            color: var(--main-color-darkest);
+        }
+
+    .fa-eye {
+        cursor: pointer;
+        color:var(--contrast-color)
+
+    }
+    .password-box {
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+    }
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: left;
+        justify-content: center;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    @media screen and (max-width: 2560px) {
+        .login-section {
+            width: 900px;
+        }
+        
+    }
+    @media screen and (max-width: 1920px) {
+        .login-section {
+            width: 600px;
+        }
+        
+    }
+    @media screen and (max-width: 1280px) {
+        .login-section {
+            width: 70%;
+        }
+        
+    }
+    @media screen and (max-width: 960px) {
+        .login-section {
+            width: 80%;
+        }
+        
+    }
+    @media screen and (max-width: 800px) {
+        .login-section {
+            width: 100%;
+        }
+        
+    }
+
