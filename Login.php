@@ -3,6 +3,8 @@ session_start();
 
 // Check if the session cookie is set
 if (isset($_COOKIE['user_session'])) {
+    // After successful login, regenerate session ID to prevent fixation
+    session_regenerate_id(true); // Generates a new session ID and deletes the old one
     // Only call session_id if the session is not active yet
     if (session_status() == PHP_SESSION_NONE) {
         session_id($_COOKIE['user_session']); // Set the session ID
@@ -26,19 +28,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check if the user is in the database
     $conn = new mysqli("localhost", "root", "", "login_system");
     if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
+        // Show generic error to user
+        die("An error occurred, please try again later."). $conn->connect_error;
+
+        // Log detailed error (example using error_log)
+        error_log("Connection failed: " . $conn->connect_error);
     }
 
-    $stmt = $conn->prepare("SELECT password FROM users WHERE username = ?");
-    $stmt->bind_param("s", $username);
+    $stmt = $conn->prepare("SELECT id, password FROM users WHERE username = ?");
+    $stmt->bind_param("s", $username); //  prevent SQL injection
     $stmt->execute();
-    $stmt->bind_result($hashed_password);
+    $stmt->bind_result($user_id, $hashed_password);
     $stmt->fetch();
 
     // If the user is in the database, check if the password is correct
     if ($hashed_password && password_verify($password, $hashed_password)) {
         // If the password is correct, log the user in
         $_SESSION['username'] = $username;
+        $_SESSION['user_id'] = $user_id; // Set the user ID from the database
         if ($stay_logged_in) {
             // Set a cookie that expires in 30 days
             setcookie("user_session", session_id(), time() + 60 * 60 * 24 * 30);

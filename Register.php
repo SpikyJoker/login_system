@@ -3,6 +3,7 @@ session_start();
 
 // Check if the session cookie is set
 if (isset($_COOKIE['user_session'])) {
+    session_regenerate_id(true); // Generates a new session ID and deletes the old one
     // Only call session_id if the session is not active yet
     if (session_status() == PHP_SESSION_NONE) {
         session_id($_COOKIE['user_session']); // Set the session ID
@@ -42,7 +43,11 @@ if (isset($_COOKIE['user_session'])) {
             $conn = new mysqli("localhost", "root", "", "login_system");
 
             if ($conn->connect_error) {
-                die("Connection failed: " . $conn->connect_error);
+                // Show generic error to user
+                die("An error occurred, please try again later."). $conn->connect_error;
+        
+                // Log detailed error (example using error_log)
+                error_log("Connection failed: " . $conn->connect_error);
             }
 
             // Check if username or email already exists
