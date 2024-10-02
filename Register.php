@@ -1,22 +1,21 @@
 <?php
 session_start();
 
+// Check if the session cookie is set
 if (isset($_COOKIE['user_session'])) {
-    // Validate the session ID stored in the cookie
-    session_id($_COOKIE['user_session']);
-    session_start();
-    
+    // Only call session_id if the session is not active yet
+    if (session_status() == PHP_SESSION_NONE) {
+        session_id($_COOKIE['user_session']); // Set the session ID
+        session_start(); // Continue the session
+    }
+
     // Check if the session is valid
     if (isset($_SESSION['user_id'])) {
         // User is logged in
-		header("Location: Dashboard.php");
-
-	}
+        header("Location: Dashboard.php");
+        exit();
+    }
 }
-?>
-
-
-<?php
 
     // Check if the form is submitted
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -173,6 +172,7 @@ if (isset($_COOKIE['user_session'])) {
                     </div>
                 </div>
                 <button type="submit" class="log-in-wrapper">Register</button>
+                <p><?php if (isset($error_message)) echo $error_message; ?></p>
                 <a href="Login.php">Switch to login</a>
             </form>
             <?php

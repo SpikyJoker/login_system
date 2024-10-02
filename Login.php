@@ -1,18 +1,60 @@
 <?php
 session_start();
 
+// Check if the session cookie is set
 if (isset($_COOKIE['user_session'])) {
-    // Validate the session ID stored in the cookie
-    session_id($_COOKIE['user_session']);
-    session_start();
-    
+    // Only call session_id if the session is not active yet
+    if (session_status() == PHP_SESSION_NONE) {
+        session_id($_COOKIE['user_session']); // Set the session ID
+        session_start(); // Continue the session
+    }
+
     // Check if the session is valid
     if (isset($_SESSION['user_id'])) {
         // User is logged in
-		header("Location: Dashboard.php");
-		exit();
+        header("Location: Dashboard.php");
+        exit();
+    }
+}
 
-	}
+// Process form submission and login logic
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+    $stay_logged_in = isset($_POST['stay_logged_in']) ? true : false;
+    
+    // Check if the user is in the database
+    $conn = new mysqli("localhost", "root", "", "login_system");
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    $stmt = $conn->prepare("SELECT password FROM users WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $stmt->bind_result($hashed_password);
+    $stmt->fetch();
+
+    // If the user is in the database, check if the password is correct
+    if ($hashed_password && password_verify($password, $hashed_password)) {
+        // If the password is correct, log the user in
+        $_SESSION['username'] = $username;
+        if ($stay_logged_in) {
+            // Set a cookie that expires in 30 days
+            setcookie("user_session", session_id(), time() + 60 * 60 * 24 * 30);
+        } else {
+            // Set a cookie that expires when the browser is closed
+            setcookie("user_session", session_id(), 0);
+        }
+        header("Location: Dashboard.php");
+        exit();
+    } else {
+        // If the user is not in the database or the password is incorrect, display an error message
+        $login_error = "Invalid credentials.";
+    }
+
+    $stmt->close();
+    $conn->close();
 }
 ?>
 
@@ -117,51 +159,7 @@ if (isset($_COOKIE['user_session'])) {
 							</label>
 						</div>
 						<button type="submit" class="log-in-wrapper">Log In</button>
-						<p><?php
-								if ($_SERVER["REQUEST_METHOD"] == "POST") {
-									$username = $_POST["username"];
-									$password = $_POST["password"];
-									$stay_logged_in = isset($_POST['stay_logged_in']) ? true : false;
-									// Check if the user is in the database
-									$conn = new mysqli("localhost", "root", "", "login_system");
-									if ($conn->connect_error) {
-										die("Connection failed: " . $conn->connect_error);
-									}
-
-									$stmt = $conn->prepare("SELECT password FROM users WHERE username = ?");
-									$stmt->bind_param("s", $username);
-									$stmt->execute();
-									$stmt->bind_result($hashed_password);
-									$stmt->fetch();
-
-									// If the user is in the database, check if the password is correct
-									if ($hashed_password && password_verify($password, $hashed_password)) {
-										// If the password is correct, log the user in
-										$_SESSION['username'] = $username;
-										if ($stay_logged_in) {
-											// Set a cookie that expires in 30 days
-											setcookie("user_session", session_id(), time() + 60 * 60 * 24 * 30);
-										}
-										else{
-											// Set a cookie that expires when the browser is closed
-											setcookie("user_session", session_id(), 0);
-										}
-										header("Location: Dashboard.php");
-                                        exit();
-									} else {
-										// If the user is not in the database or the password is incorrect, display an error message
-										echo "Invalid credentials.";
-									}
-
-									$stmt->close();
-									$conn->close();
-
-									
-
-								}
-							
-						?>
-                        </p>
+						<p><?php if (isset($login_error)) echo $login_error; ?></p>
 						<a href="Register.php">Switch to register</a>
 						<input type="hidden" name="csrf_token" value="<?php echo bin2hex(random_bytes(32)); ?>">
 					</form>
