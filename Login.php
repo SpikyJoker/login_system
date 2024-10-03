@@ -18,9 +18,17 @@ if (isset($_COOKIE['user_session'])) {
         exit();
     }
 }
+// Generate and store CSRF token
+if (empty($_SESSION['csrf_token'])) {
+	$_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 
 // Process form submission and login logic
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+	if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+		die('Invalid CSRF token');
+	}
+	// Process the form data
     $username = $_POST["username"];
     $password = $_POST["password"];
     $stay_logged_in = isset($_POST['stay_logged_in']) ? true : false;
@@ -165,13 +173,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 								 <input class="checkbox" type="checkbox" name="stay_logged_in" > Stay logged in
 							</label>
 						</div>
+						<input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 						<button type="submit" class="log-in-wrapper">Log In</button>
 						<p><?php if (isset($login_error)) echo $login_error; ?></p>
 						<a href="Register.php">Switch to register</a>
-						<input type="hidden" name="csrf_token" value="<?php echo bin2hex(random_bytes(32)); ?>">
 					</form>
-					
-				
 		</div>
 	</main>
 	<footer class="bg-gray-900" aria-labelledby="footer-heading"><h2 id="footer-heading" class="sr-only">Footer</h2><div class="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8 lg:pt-32"><div class="xl:grid xl:grid-cols-3 xl:gap-8"><img class="h-32" src="/img/kempf-enterprises-logo.svg" alt="Second Hand Phones"><div class="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0"><div class="md:grid md:grid-cols-2 md:gap-8"><div><h3 class="text-sm font-semibold leading-6 text-white">About Us</h3><ul role="list" class="mt-6 space-y-4"><li><a href="/about-us" class="text-sm leading-6 text-gray-300 hover:text-white">About Us</a></li><li><a href="/privacy-policy" class="text-sm leading-6 text-gray-300 hover:text-white">Privacy Policy</a></li><li><a href="/terms-conditions" class="text-sm leading-6 text-gray-300 hover:text-white">Terms &amp; Conditions</a></li><li><a href="/privacy-policy#list" class="text-sm leading-6 text-gray-300 hover:text-white">Cookie Policy</a></li></ul></div><div class="mt-10 md:mt-0"><h3 class="text-sm font-semibold leading-6 text-white">Customer Support</h3><ul role="list" class="mt-6 space-y-4"><li><a href="/grade-description" class="text-sm leading-6 text-gray-300 hover:text-white">Our Grading Process</a></li><li><a href="/warranty" class="text-sm leading-6 text-gray-300 hover:text-white">Our Warranty</a></li><li><a href="/shipping-delivery" class="text-sm leading-6 text-gray-300 hover:text-white">Delivery &amp; Shipping</a></li><li><a href="/returns" class="text-sm leading-6 text-gray-300 hover:text-white">Returns</a></li><li><a href="/your-account/login" class="text-sm leading-6 text-gray-300 hover:text-white">My Account</a></li><li><a href="https://second-handphones.com/knowledge-centre" class="text-sm leading-6 text-gray-300 hover:text-white">Technical Help</a></li><li><a href="/contact" class="text-sm leading-6 text-gray-300 hover:text-white">Contact Us</a></li></ul></div></div><div class="text-4xl text-white text-center space-x-2"><i class="fa-brands fa-cc-visa" aria-hidden="true"></i><i class="fa-brands fa-cc-mastercard" aria-hidden="true"></i><i class="fa-brands fa-cc-paypal" aria-hidden="true"></i><i class="fa-brands fa-cc-apple-pay" aria-hidden="true"></i><i class="fa-brands fa-google-pay" aria-hidden="true"></i></div></div></div><div class="mt-8 border-t border-white/10 py-8"><p class="text-xs leading-5 text-gray-400 md:mt-0">© 2024 Kempf Enterprises Limited trading as Second-HandPhones.com, All rights reserved │ Registered Company No. 08490759 </p></div></div></footer>
