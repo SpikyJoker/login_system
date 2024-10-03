@@ -4,7 +4,8 @@ session_set_cookie_params([
     'secure' => true, // Set to true if using HTTPS
     'samesite' => 'Strict' // Set to 'Strict' or 'Lax' based on your application needs
 ]);
-session_start();
+
+session_start(session_set_cookie_params());
 function validate_password($password) {
     if (strlen($password) < 8) {
         return "Password must be at least 8 characters long.";
@@ -24,29 +25,22 @@ function validate_password($password) {
     return true;
 }
 
-
 // Check if the session cookie is set
 if (isset($_COOKIE['user_session'])) {
     session_regenerate_id(true); // Generates a new session ID and deletes the old one
     // Only call session_id if the session is not active yet
-    if (session_status() == PHP_SESSION_NONE) { // if there is no session
+    if (session_status() == PHP_SESSION_NONE) {
         session_id($_COOKIE['user_session']); // Set the session ID
         session_start(); // Continue the session
     }
 
-    // Check if the session id is set
+    // Check if the session is valid
     if (isset($_SESSION['user_id'])) {
         // User is logged in
-		// Check if username or email already exists
-                $stmt = $conn->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
-                $stmt->bind_param("ss", $username, $email);
-                $stmt->execute();
-                $stmt->store_result();
         header("Location: Dashboard.php");
         exit();
     }
 }
-// Gener
 // Generate and store CSRF token
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
