@@ -25,6 +25,7 @@
         background-color: var(--main-back);
         color: var(--contrast-color);
         display: flex;
+        padding: 100px 0px;
         flex-direction: column;
         align-items: center;
         justify-content: center;
